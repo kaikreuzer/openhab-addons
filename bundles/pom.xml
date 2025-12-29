@@ -401,6 +401,7 @@
     <module>org.openhab.binding.smaenergymeter</module>
     <module>org.openhab.binding.smartmeter</module>
     <module>org.openhab.binding.smartthings</module>
+    <module>org.openhab.binding.smartthingscloud</module>
     <module>org.openhab.binding.smgw</module>
     <module>org.openhab.binding.smhi</module>
     <module>org.openhab.binding.smsmodem</module>

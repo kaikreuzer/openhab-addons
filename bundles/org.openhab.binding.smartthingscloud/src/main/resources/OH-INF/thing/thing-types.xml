@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="smartthingscloud"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- SmartThings Account Bridge -->
+	<bridge-type id="account">
+		<label>SmartThings Account</label>
+		<description>A bridge that connects to your SmartThings account</description>
+		<config-description>
+			<parameter name="clientId" type="text" required="false">
+				<label>Client ID</label>
+				<description>Your SmartThings OAuth Client ID (optional, defaults to SmartThings CLI ID).</description>
+			</parameter>
+			<parameter name="clientSecret" type="text" required="false">
+				<context>password</context>
+				<label>Client Secret</label>
+				<description>Your SmartThings OAuth Client Secret (optional for SmartThings CLI flow).</description>
+			</parameter>
+			<parameter name="authCode" type="text" required="false">
+				<label>Authorization Code</label>
+				<description>The temporary code received after authorizing via the URL (captured automatically if using port 61973).</description>
+			</parameter>
+		</config-description>
+	</bridge-type>
+
+	<!-- Samsung Windfree AC -->
+	<thing-type id="windfree-ac">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="account"/>
+		</supported-bridge-type-refs>
+
+		<label>Samsung Windfree AC</label>
+		<description>Controls a Samsung Windfree Air Conditioner via SmartThings</description>
+
+		<channels>
+			<channel id="power" typeId="power"/>
+			<channel id="temperature" typeId="temperature"/>
+			<channel id="setpoint" typeId="setpoint"/>
+			<channel id="mode" typeId="ac-mode"/>
+		</channels>
+
+		<config-description>
+			<parameter name="deviceId" type="text" required="true">
+				<label>Device ID</label>
+				<description>The SmartThings Device ID (UUID)</description>
+			</parameter>
+			<parameter name="refreshInterval" type="integer" min="10" unit="s">
+				<label>Refresh Interval</label>
+				<description>Interval for polling device status in seconds (min 10s).</description>
+				<default>60</default>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- Channel Types -->
+	<channel-type id="power">
+		<item-type>Switch</item-type>
+		<label>Power</label>
+		<description>Turn the AC on or off</description>
+		<category>Power</category>
+	</channel-type>
+
+	<channel-type id="temperature">
+		<item-type>Number:Temperature</item-type>
+		<label>Temperature</label>
+		<description>Current room temperature</description>
+		<category>Temperature</category>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="setpoint">
+		<item-type>Number:Temperature</item-type>
+		<label>Target Temperature</label>
+		<description>Target temperature setpoint</description>
+		<category>Temperature</category>
+	</channel-type>
+
+	<channel-type id="ac-mode">
+		<item-type>String</item-type>
+		<label>Mode</label>
+		<description>Operating mode (Auto, Cool, Dry, Heat, Windfree)</description>
+		<category>Fane</category>
+		<state>
+			<options>
+				<option value="auto">Auto</option>
+				<option value="cool">Cool</option>
+				<option value="dry">Dry</option>
+				<option value="heat">Heat</option>
+				<option value="windfree">Windfree</option>
+			</options>
+		</state>
+	</channel-type>
+
+</thing:thing-descriptions>
