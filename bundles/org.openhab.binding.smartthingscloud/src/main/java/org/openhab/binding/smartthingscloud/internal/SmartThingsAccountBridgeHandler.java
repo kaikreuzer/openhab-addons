@@ -26,7 +26,7 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Bridge handler for SmartThings Account.
- * 
+ *
  * @author Kai Kreuzer - Initial contribution
  */
 @NonNullByDefault
@@ -54,20 +54,13 @@ public class SmartThingsAccountBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void initialize() {
-        String clientId = (String) getThing().getConfiguration().get("clientId");
-        String clientSecret = (String) getThing().getConfiguration().get("clientSecret");
-
-        if (clientId == null || clientId.isBlank()) {
-            clientId = CLI_CLIENT_ID;
-        }
-
-        initializeOAuth(clientId, clientSecret != null ? clientSecret : "");
+        initializeOAuth(CLI_CLIENT_ID);
         discoveryService.registerBridgeHandler(this);
     }
 
-    private void initializeOAuth(String clientId, String clientSecret) {
+    private void initializeOAuth(String clientId) {
         oauthClientService = oauthFactory.createOAuthClientService(getThing().getUID().getAsString(), TOKEN_URL,
-                AUTH_URL, clientId, clientSecret, SCOPE, false);
+                AUTH_URL, clientId, null, SCOPE, true);
 
         try {
             org.openhab.core.auth.client.oauth2.AccessTokenResponse response = oauthClientService
@@ -75,20 +68,13 @@ public class SmartThingsAccountBridgeHandler extends BaseBridgeHandler {
             if (response != null && response.getAccessToken() != null) {
                 setupClient();
             } else {
-                String authCode = (String) getThing().getConfiguration().get("authCode");
-                if (authCode != null && !authCode.isBlank()) {
-                    response = oauthClientService.getAccessTokenResponseByAuthorizationCode(authCode, REDIRECT_URI);
-                    if (response.getAccessToken() != null) {
-                        setupClient();
-                        return;
-                    }
-                }
-
                 startCallbackListener();
 
                 org.openhab.core.auth.client.oauth2.OAuthClientService srv = oauthClientService;
-                String authUrl = srv != null ? srv.getAuthorizationUrl(REDIRECT_URI, getThing().getUID().getId(), SCOPE)
-                        + "&client_type=USER_LEVEL" : "";
+                String authUrl = srv != null
+                        ? srv.getAuthorizationUrl(REDIRECT_URI, SCOPE, getThing().getUID().getId())
+                                + "&client_type=USER_LEVEL"
+                        : "";
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                         "Please authorize the binding by visiting: " + authUrl
                                 + "\nThe authorization code will be captured automatically.");
@@ -116,7 +102,7 @@ public class SmartThingsAccountBridgeHandler extends BaseBridgeHandler {
                     os.close();
 
                     // Finish OAuth flow
-                    finishOAuth(code);
+                    finishOAuth(code, getThing().getUID().getId());
                     stopCallbackListener();
                 } else {
                     exchange.sendResponseHeaders(400, 0);
@@ -139,10 +125,11 @@ public class SmartThingsAccountBridgeHandler extends BaseBridgeHandler {
         }
     }
 
-    private void finishOAuth(String code) {
+    private void finishOAuth(String code, String verifier) {
         org.openhab.core.auth.client.oauth2.OAuthClientService srv = oauthClientService;
         if (srv != null) {
             try {
+                srv.addExtraAuthField("code_verifier", verifier);
                 org.openhab.core.auth.client.oauth2.AccessTokenResponse response = srv
                         .getAccessTokenResponseByAuthorizationCode(code, REDIRECT_URI);
                 if (response.getAccessToken() != null) {

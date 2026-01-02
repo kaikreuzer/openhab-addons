@@ -8,21 +8,6 @@
 	<bridge-type id="account">
 		<label>SmartThings Account</label>
 		<description>A bridge that connects to your SmartThings account</description>
-		<config-description>
-			<parameter name="clientId" type="text" required="false">
-				<label>Client ID</label>
-				<description>Your SmartThings OAuth Client ID (optional, defaults to SmartThings CLI ID).</description>
-			</parameter>
-			<parameter name="clientSecret" type="text" required="false">
-				<context>password</context>
-				<label>Client Secret</label>
-				<description>Your SmartThings OAuth Client Secret (optional for SmartThings CLI flow).</description>
-			</parameter>
-			<parameter name="authCode" type="text" required="false">
-				<label>Authorization Code</label>
-				<description>The temporary code received after authorizing via the URL (captured automatically if using port 61973).</description>
-			</parameter>
-		</config-description>
 	</bridge-type>
 
 	<!-- Samsung Windfree AC -->
