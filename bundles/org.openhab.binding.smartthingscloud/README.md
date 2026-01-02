@@ -25,21 +25,12 @@ The binding utilizes the SmartThings CLI OAuth flow for a simplified setup. No m
 
 #### Configuration Steps
 1. Create a **SmartThings Account** bridge in openHAB.
-2. Leave `Client ID` and `Client Secret` empty (unless you want to use your own).
-3. Check the bridge status; it will provide an authorization URL.
-4. Click the URL to authorize the binding.
-5. The binding will automatically capture the authorization code on port 61973 and complete the setup.
+2. Check the bridge status; it will provide an authorization URL.
+3. Click the URL to authorize the binding.
+4. The binding will automatically capture the authorization code on port 61973 and complete the setup.
 
 > [!TIP]
 > Ensure that port **61973** is available on the machine running openHAB during the authorization process.
-
-### Bridge Configuration
-
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `clientId` | text | No | OAuth Client ID (optional, defaults to SmartThings CLI ID). |
-| `clientSecret` | text | No | OAuth Client Secret (optional for SmartThings CLI flow). |
-| `authCode` | text | No | Captured automatically. |
 
 ### Samsung WindFree AC (`windfree-ac`)
 
